@@ -16,22 +16,14 @@ DB_CONFIG = {
 
 engine = create_engine(f'mysql+pymysql://{DB_CONFIG["user"]}:{DB_CONFIG["password"]}@{DB_CONFIG["host"]}:{DB_CONFIG["port"]}/{DB_CONFIG["database"]}')
 
+@st.cache_data
 def get_stocks():
     with engine.connect() as conn:
         return pd.read_sql("SELECT * FROM tb_stock", conn)
 
-def get_data(stock_id):
-    with engine.connect() as conn:
-        query = "SELECT * FROM tb_price WHERE stock_id = %s ORDER BY created_at DESC LIMIT 100"
-        return pd.read_sql(query, conn, params=(stock_id,))
-
-stocks = get_stocks()
-
 def stock_selector(stocks):
     main_selection = st.selectbox("Stocks", stocks)
     return main_selection
-
-stock = stock_selector(stocks['name'])
 
 def get_id(stock):
     with engine.connect() as conn:
@@ -41,8 +33,14 @@ def get_id(stock):
             return result['id'].iloc[0]
         return None
 
-stock_id = get_id(stock)
+def get_data(stock_id):
+    with engine.connect() as conn:
+        query = "SELECT * FROM tb_price WHERE stock_id = %s ORDER BY created_at DESC LIMIT 100"
+        return pd.read_sql(query, conn, params=(stock_id,)) 
 
+stocks = get_stocks()
+stock = stock_selector(stocks['name'])
+stock_id = get_id(stock)
 data = get_data(stock_id)
 
 st.dataframe(data)
