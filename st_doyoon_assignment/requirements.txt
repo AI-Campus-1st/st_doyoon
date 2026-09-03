@@ -1,0 +1,9 @@
+random
+sqlalchemy
+datetime
+streamlit
+pandas
+plotly
+streamlit_autorefresh
+python-dotenv
+pymysql
