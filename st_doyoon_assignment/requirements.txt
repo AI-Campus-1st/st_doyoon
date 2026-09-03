@@ -1,8 +1,7 @@
-random
-sqlalchemy
-datetime
+SQLAlchemy
 streamlit
 pandas
 plotly
 python-dotenv
-pymysql
+PyMySQL
+streamlit-autorefresh
